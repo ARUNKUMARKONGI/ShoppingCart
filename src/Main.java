@@ -1,6 +1,166 @@
 import java.util.*;
 
 class Item {
+    private final String name;
+    private final double price;
+
+    public Item(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+public class Main {
+    private static final Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        TreeMap<String, List<Item>> carts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        carts.put("grocery", new ArrayList<>());
+        carts.put("electronics", new ArrayList<>());
+        carts.put("clothing", new ArrayList<>());
+
+        System.out.println("Welcome to Shopping App:");
+        System.out.println("Available Carts: GROCERY, ELECTRONICS, CLOTHING");
+        System.out.println("Choose a Cart to Add Products:");
+
+        System.out.println("\n 1. GROCERY CART");
+        System.out.println(" 2. ELECTRONICS CART");
+        System.out.println(" 3. CLOTHING CART");
+        System.out.println(" 4. Place Order");
+        System.out.println(" 5. Exit");
+
+        int choice;
+        while (true) {
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    addItemtoCart(carts.get("grocery"), "GROCERY");
+                    break;
+                case 2:
+                    addItemtoCart(carts.get("elctronics"), "ELECTRONICS");
+                    break;
+                case 3:
+                    addItemtoCart(carts.get("clothing"), "CLOTHING");
+                    break;
+                case 4:
+                    PlaceOrder(carts);
+                case 5:
+                    System.out.println("Exiting the Shopping App");
+                    sc.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid Choice. try again");
+            }
+        }
+    }
+
+    public static void addItemtoCart(List<Item> cart, String cartName) {
+        String itemName = sc.next();
+        double itemValue = sc.nextDouble();
+
+        Item a = new Item(itemName, itemValue);
+        cart.add(a);
+        System.out.println(itemName + " added to the cart " + cartName);
+    }
+
+    public static double CalculateTotal(List<Item> t) {
+        return t.stream().mapToDouble(Item::getPrice).sum();
+    }
+
+    public static void removeItemFromCart(List<Item> r, String itemtoRemove) {
+        r.removeIf(item -> item.getName().equalsIgnoreCase(itemtoRemove));
+        System.out.println(itemtoRemove + " has been removed from the cart");
+
+       /* for (Item i:r){
+            if(i.getName().equalsIgnoreCase(itemtoRemove));
+            {
+                r.remove(i);
+            }
+        }*/
+    }
+
+    public static void PlaceOrder(Map<String, List<Item>> carts) {
+        //how to place the order implement this logic
+        while (true) {
+            String cartName = sc.nextLine();
+            List<Item> selectedCart = carts.get(cartName);
+            if (selectedCart == null || selectedCart.isEmpty()) {
+                System.out.println("Can't Place Order: Cart is Either empty or Invalid Cart");
+                System.out.println("Returning to Main Site: Continue Shopping");
+                break;
+            }
+            double total = CalculateTotal(selectedCart);
+            //give remove or no message from user
+            String remove = sc.nextLine().toLowerCase();
+            if (remove.equals("remove")) {
+                // enter the name of product to remove
+                String itemToRemove = sc.nextLine();
+                removeItemFromCart(selectedCart, itemToRemove);
+                total = CalculateTotal(selectedCart);
+            }
+            double discount = 0.0;
+            if (cartName.equalsIgnoreCase("Grocery")) {
+                discount = 0.1;
+            } else if (cartName.equalsIgnoreCase("Electronics")) {
+                discount = 0.2;
+            } else if (cartName.equalsIgnoreCase("Clothing")) {
+                discount = 0.3;
+            }
+            double discountedTotal = total * (1 - discount);
+            System.out.println("\n Order Summary:");
+            selectedCart.stream().forEach(item -> System.out.println("- " + item.getName() + " " + item.getPrice()));
+            /*for (Item i : selectedCart) {
+                System.out.println("- " + i.getName() + " " + i.getPrice());
+            }*/
+            System.out.printf("\n%s CART - Total Bill (%d%% discount applied): Rs.%.2f/-\n", cartName.toUpperCase(), (int) (discount * 100), discountedTotal);
+            System.out.println("\nOrder Placed!!Thank You!!!");
+            String shopMore = sc.nextLine().toLowerCase();
+            if (shopMore.equals("no")) {
+                System.out.println("Returning to Main Site. Continue Shopping");
+                break;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+import java.util.*;
+
+class Item {
     private String name;
     private double price;
 
@@ -71,24 +231,34 @@ public class Main {
     private static double calculateTotal(List<Item> cart) {
         return cart.stream().mapToDouble(Item::getPrice).sum();
     }
-    /*private static double calculateTotal(List<Item> cart) {
+    */
+/*private static double calculateTotal(List<Item> cart) {
         double total = 0.0;
         for (Item item : cart) {
             total += item.getPrice();
         }
         return total;
-    }*/
+    }*//*
+
     private static void removeItemFromCart(List<Item> cart, String itemName) {
         cart.removeIf(item -> item.getName().equalsIgnoreCase(itemName));
         System.out.println(itemName + " has been removed from the cart");
     }
 
+
+
+
+
+
+
     private static void placeOrder(TreeMap<String, List<Item>> carts) {
         while (true) {
             //System.out.println("\nEnter Cart Name to Place Order:");
-            /*System.out.println("Grocery");
+            */
+/*System.out.println("Grocery");
             System.out.println("Electronics");
-            System.out.println("Clothing");*/
+            System.out.println("Clothing");*//*
+
             String cartName = sc.nextLine();
             List<Item> selectedCart = carts.get(cartName);
             if (selectedCart == null || selectedCart.isEmpty()) {
@@ -138,3 +308,10 @@ public class Main {
     }
 }
 
+  */
+/*  boolean itemExists = cart.stream().anyMatch(item -> item.getName().equalsIgnoreCase(itemName));
+
+        if (itemExists) {
+                System.out.println(itemName + " is already in the cart. Cannot add duplicates.");
+                return;
+                }*/
